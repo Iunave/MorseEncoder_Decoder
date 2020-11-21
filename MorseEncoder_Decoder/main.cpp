@@ -16,7 +16,7 @@ int main(int Argc, char* Argv[])
     if(std::string{Argv[1]} == "-Help" || std::string{Argv[1]} == "-help")
     {
         std::cout << "<Input File> <-Decode/-Encode> <Output File> (optional) \n" << std::endl;
-        std::cout << "Morse-code is written as . = short, _ = long, | = new character, < = new word. end file with |\n" << std::endl;
+        std::cout << "Morse-code is written as . = short, _ = long, | = new character, < = new word\n" << std::endl;
         std::cout << "Example input code: ....<....|....|....<....|....|" << std::endl;
         return 0;
     }
