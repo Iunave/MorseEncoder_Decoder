@@ -10,15 +10,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
 #include "FileReader.h"
-
 namespace MorseCodes
 {
-    inline constexpr uint16 Short{'.'};
-    inline constexpr uint16 Long{'_'};
-    inline constexpr uint16 NewWord{'<'};
-    inline constexpr uint16 Space{'|'};
+    inline constexpr uint16 Short{'*'};
+    inline constexpr uint16 Long{'-'};
+    inline constexpr uint16 NewWord{'|'};
+    inline constexpr uint16 Space{'&'};
 
     inline constexpr Simd::uint16_8 NullChar{0, 0, 0, 0, 0, 0, 0, 0};
     inline constexpr Simd::uint16_8 NewWordChar{NewWord, 0, 0, 0, 0, 0, 0, 0};
@@ -234,13 +232,7 @@ std::vector<Simd::uint16_8> EncodePlainTextToMorse(const std::string& PathToFile
         {
             MorseCodeVector.push_back(MorseCodes::SeparateCharacterChar);
         }
-        else
-        {
-            ++Index;
-        }
     }
-
-    MorseCodeVector.erase(MorseCodeVector.end());
 
     return MorseCodeVector;
 }
@@ -259,7 +251,10 @@ void WriteToFile(const std::string& PathToOutFile, const ByteVector& StringToWri
 
     for(const uint8 Character : StringToWrite)
     {
-        FStream << Character;
+        if(Character != '#')
+        {
+            FStream << Character;
+        }
     }
 
     FStream.close();
@@ -281,6 +276,7 @@ void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::uint1
     {
         FStream << static_cast<char>(Character);
     });
+
 
     FStream.close();
 }
