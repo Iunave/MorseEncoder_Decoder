@@ -61,6 +61,15 @@ namespace MorseCodes
     inline constexpr Simd::int16_8 Seven{Long, Long, Short, Short, Short, 0, 0, 0};
     inline constexpr Simd::int16_8 Eight{Long, Long, Long, Long, Short, 0, 0, 0};
     inline constexpr Simd::int16_8 Nine{Long, Long, Long, Long, Long, 0, 0, 0};
+
+    inline constexpr Simd::int16_8 Dot{Short, Long, Short, Long, Short, Long, 0, 0};
+    inline constexpr Simd::int16_8 Comma{Long, Long, Short, Short, Long, Long, 0, 0};
+
+    inline constexpr Simd::int16_8 OpenBracket{Long, Short, Long, Long, Short, Long, 0, 0};
+    inline constexpr Simd::int16_8 CloseBracket{Long, Short, Long, Long, Short, 0, 0, 0};
+
+    inline constexpr Simd::int16_8 QuestionMark{Short, Short, Long, Long, Short, Short, 0, 0};
+    inline constexpr Simd::int16_8 ExclamationMark{Long, Short, Long, Short, Long, Long, 0, 0};
 }
 
 std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile)
@@ -105,6 +114,12 @@ std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile)
         else if(MorseCode == Seven) return '7';
         else if(MorseCode == Eight) return '8';
         else if(MorseCode == Nine) return '9';
+        else if(MorseCode == Dot) return '.';
+        else if(MorseCode == OpenBracket) return '(';
+        else if(MorseCode == CloseBracket) return ')';
+        else if(MorseCode == Comma) return ',';
+        else if(MorseCode == QuestionMark) return '?';
+        else if(MorseCode == ExclamationMark) return '!';
         else if(MorseCode == NewWordChar) return ' ';
         else if(MorseCode == NullChar) return '#';
 
@@ -210,6 +225,12 @@ std::vector<Simd::int16_8> EncodePlainTextToMorse(const std::string& PathToFile)
             case '7': return Seven;
             case '8': return Eight;
             case '9': return Nine;
+            case '.': return Dot;
+            case '(': return OpenBracket;
+            case ')': return CloseBracket;
+            case ',': return Comma;
+            case '?': return QuestionMark;
+            case '!': return ExclamationMark;
             case ' ': return NewWordChar;
 
             default: return NullChar;
@@ -279,7 +300,7 @@ void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::int16
     std::fstream FStream{};
 
     FStream.open(PathToOutFile, std::ios::out);
-    
+
     if(!FStream)
     {
         std::cerr << "Failed to open file with path: " << PathToOutFile << std::endl;
