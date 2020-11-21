@@ -10,9 +10,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
 #include "FileReader.h"
-
 int main(int Argc, char* Argv[])
 {
     if(std::string{Argv[1]} == "-Help" || std::string{Argv[1]} == "-help")
@@ -25,11 +23,11 @@ int main(int Argc, char* Argv[])
 
     if(Argc <= 3)
     {
-        auto OutputAll = [](const ByteVector& Vector) -> void
+        auto OutputAll = [](const std::vector<char>& Vector) -> void
         {
-            for(const uint8 Character : Vector)
+            for(const char Character : Vector)
             {
-                std::cout << static_cast<char>(Character);
+                std::cout << Character;
             }
             std::cout << std::endl;
         };
