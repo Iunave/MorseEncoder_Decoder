@@ -10,7 +10,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
 #include <iostream>
@@ -20,14 +19,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include "Simd_Library-main/SimdRegisterLibrary.h"
 
-using ByteVector = std::vector<uint8>;
+std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile);
 
-ByteVector DecodeMorseToPlainText(const std::string& PathToFile);
+std::vector<Simd::int16_8> EncodePlainTextToMorse(const std::string& PathToFile);
 
-std::vector<Simd::uint16_8> EncodePlainTextToMorse(const std::string& PathToFile);
-
-void WriteToFile(const std::string& PathToOutFile, const ByteVector& StringToWrite);
-void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::uint16_8>& StringToWrite);
+void WriteToFile(const std::string& PathToOutFile, const std::vector<char>& StringToWrite);
+void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::int16_8>& StringToWrite);
 
 template<typename RegisterType, typename Callback>
 INLINE void ForEachElementNotZeroInRegisters(const std::vector<RegisterType>& VectorRegisters, Callback CallbackFunction)
@@ -43,4 +40,3 @@ INLINE void ForEachElementNotZeroInRegisters(const std::vector<RegisterType>& Ve
         }
     }
 }
-
