@@ -10,17 +10,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include <list>
 #include "FileReader.h"
 namespace MorseCodes
 {
     inline constexpr int16 Short{'*'};
     inline constexpr int16 Long{'-'};
     inline constexpr int16 NewWord{'|'};
-    inline constexpr int16 Space{'&'};
+    inline constexpr int16 SeparateChar{'&'};
+    inline constexpr char Unrecognized{'#'};
 
     inline constexpr Simd::int16_8 NullChar{0, 0, 0, 0, 0, 0, 0, 0};
     inline constexpr Simd::int16_8 NewWordChar{NewWord, 0, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 SeparateCharacterChar{Space, 0, 0, 0, 0, 0, 0, 0};
+    inline constexpr Simd::int16_8 SeparateCharacterChar{SeparateChar, 0, 0, 0, 0, 0, 0, 0};
 
     inline constexpr Simd::int16_8 A{Short, Long, 0, 0, 0, 0, 0, 0};
     inline constexpr Simd::int16_8 B{Long, Short, Short, Short, 0, 0, 0, 0};
@@ -128,9 +130,10 @@ std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile)
         for(int8 RegisterIndex{0}; !FStream.eof(); ++RegisterIndex)
         {
             char TempChar;
+
             FStream >> std::noskipws >> TempChar;
 
-            if unlikely(TempChar == static_cast<char>(MorseCodes::Space))
+            if unlikely(TempChar == static_cast<char>(MorseCodes::SeparateChar))
             {
                 PlainTextVector.emplace_back(GetCharacterFromMorse(MorseCode));
 
@@ -148,7 +151,8 @@ std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile)
             else
             {
                 check(RegisterIndex < 8)
-                MorseCode.Register[RegisterIndex] = static_cast<int16>(TempChar);
+
+                MorseCode.Register[RegisterIndex] = static_cast<int16>(static_cast<uint8>(TempChar));
             }
         }
 
@@ -227,13 +231,20 @@ std::vector<Simd::int16_8> EncodePlainTextToMorse(const std::string& PathToFile)
     while(!FStream.eof())
     {
         char TempChar;
+
         FStream >> std::noskipws >> TempChar;
 
-        if(MorseCodeVector.emplace_back(GetMorseFromCharacter(TempChar)) != MorseCodes::NewWordChar)
+        if unlikely(MorseCodeVector.emplace_back(GetMorseFromCharacter(TempChar)) == MorseCodes::NewWordChar)
+        {
+            MorseCodeVector.erase(MorseCodeVector.cend() - 2);
+        }
+        else
         {
             MorseCodeVector.emplace_back(MorseCodes::SeparateCharacterChar);
         }
     }
+
+    MorseCodeVector.erase(MorseCodeVector.end());
 
     FStream.close();
 
@@ -248,13 +259,16 @@ void WriteToFile(const std::string& PathToOutFile, const std::vector<char>& Stri
 
     if(!FStream)
     {
-        std::cout << "Failed to open file with path: " << PathToOutFile << std::endl;
+        std::cerr << "Failed to open file with path: " << PathToOutFile << std::endl;
         return;
     }
 
-    for(const uint8 Character : StringToWrite)
+    for(const char Character : StringToWrite)
     {
-        FStream << Character;
+        if(Character != MorseCodes::Unrecognized)
+        {
+            FStream << Character;
+        }
     }
 
     FStream.close();
@@ -265,19 +279,20 @@ void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::int16
     std::fstream FStream{};
 
     FStream.open(PathToOutFile, std::ios::out);
-
+    
     if(!FStream)
     {
-        std::cout << "Failed to open file with path: " << PathToOutFile << std::endl;
+        std::cerr << "Failed to open file with path: " << PathToOutFile << std::endl;
         return;
     }
 
-    ForEachElementNotZeroInRegisters(StringToWrite, [&FStream](const uint16 Character) -> void
+    ForEachElementNotZeroInRegisters(StringToWrite, [&FStream](const int16 Character) -> void
     {
-        FStream << static_cast<char>(Character);
+        if(Character != MorseCodes::Unrecognized)
+        {
+            FStream << static_cast<char>(Character);
+        }
     });
 
     FStream.close();
 }
-
-
