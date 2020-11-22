@@ -18,25 +18,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 #include "Simd_Library-main/SimdRegisterLibrary.h"
-
 std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile);
 
 std::vector<Simd::int16_8> EncodePlainTextToMorse(const std::string& PathToFile);
 
 void WriteToFile(const std::string& PathToOutFile, const std::vector<char>& StringToWrite);
+
 void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::int16_8>& StringToWrite);
 
+namespace MorseCodes
+{
+    extern const char Unrecognized;
+}
+
 template<typename RegisterType, typename Callback>
-INLINE void ForEachElementNotZeroInRegisters(const std::vector<RegisterType>& VectorRegisters, Callback CallbackFunction)
+INLINE void ForEachValidElementInRegisters(const std::vector<RegisterType>& VectorRegisters, Callback CallbackFunction)
 {
     for(const RegisterType& Register : VectorRegisters)
     {
         for(size_t Index{0}; Index < RegisterType::GetNumElements(); ++Index)
         {
-            if(Register[Index] != 0)
+            if(Register[Index] != 0 && static_cast<char>(Register[Index]) != MorseCodes::Unrecognized)
             {
                 CallbackFunction(Register[Index]);
             }
         }
     }
 }
+
