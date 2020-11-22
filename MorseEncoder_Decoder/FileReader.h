@@ -32,7 +32,7 @@ namespace MorseCodes
 }
 
 template<typename RegisterType, typename Callback>
-INLINE void ForEachValidElementInRegisters(const std::vector<RegisterType>& VectorRegisters, Callback CallbackFunction)
+void ForEachValidElementInRegisters(const std::vector<RegisterType>& VectorRegisters, Callback CallbackFunction)
 {
     for(const RegisterType& Register : VectorRegisters)
     {
