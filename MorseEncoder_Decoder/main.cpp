@@ -16,7 +16,7 @@ int main(int Argc, char* Argv[])
     if(std::string{Argv[1]} == "-Help" || std::string{Argv[1]} == "-help")
     {
         std::cout << "<Input File> <-Decode/-Encode> <Output File> (optional) \n" << std::endl;
-        std::cout << "Morse-code is written as . = short, _ = long, | = new character, < = new word\n" << std::endl;
+        std::cout << "Morse-code is written as * = short, - = long, & = new character, | = new word\n" << std::endl;
         std::cout << "Example input code: ....<....|....|....<....|....|" << std::endl;
         return 0;
     }
@@ -27,7 +27,10 @@ int main(int Argc, char* Argv[])
         {
             for(const char Character : Vector)
             {
-                std::cout << Character;
+                if(Character != '#')
+                {
+                    std::cout << Character;
+                }
             }
             std::cout << std::endl;
         };
@@ -38,7 +41,7 @@ int main(int Argc, char* Argv[])
         }
         else if(std::string{Argv[2]} == "-Encode")
         {
-            ForEachElementNotZeroInRegisters(EncodePlainTextToMorse(std::string{Argv[1]}), [](const uint16 Character) -> void
+            ForEachValidElementInRegisters(EncodePlainTextToMorse(std::string{Argv[1]}), [](const uint16 Character) -> void
             {
                 std::cout << static_cast<char>(Character);
             });
