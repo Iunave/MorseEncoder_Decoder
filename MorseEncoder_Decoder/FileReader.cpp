@@ -10,66 +10,65 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <list>
 #include "FileReader.h"
 namespace MorseCodes
 {
-    inline constexpr int16 Short{'*'};
-    inline constexpr int16 Long{'-'};
-    inline constexpr int16 NewWord{'|'};
-    inline constexpr int16 SeparateChar{'&'};
-    inline constexpr char Unrecognized{'#'};
+    constexpr int16 Short{'*'};
+    constexpr int16 Long{'-'};
+    constexpr int16 NewWord{'|'};
+    constexpr int16 SeparateChar{'&'};
+    const constexpr char Unrecognized{'#'};
 
-    inline constexpr Simd::int16_8 NullChar{0, 0, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 NewWordChar{NewWord, 0, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 SeparateCharacterChar{SeparateChar, 0, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 NullChar{0, 0, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 NewWordChar{NewWord, 0, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 SeparateCharacterChar{SeparateChar, 0, 0, 0, 0, 0, 0, 0};
 
-    inline constexpr Simd::int16_8 A{Short, Long, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 B{Long, Short, Short, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 C{Long, Short, Long, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 D{Long, Short, Short, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 E{Short, 0, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 F{Short, Short, Long, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 G{Long, Long, Short, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 H{Short, Short, Short, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 I{Short, Short, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 J{Short, Long, Long, Long, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 K{Long, Short, Long, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 L{Short, Long, Short, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 M{Long, Long, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 N{Long, Short, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 O{Long, Long, Long, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 P{Short, Long, Long, Short, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 Q{Long, Long, Short, Long, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 R{Short, Long, Short, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 S{Short, Short, Short, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 T{Long, 0, 0, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 U{Short, Short, Long, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 V{Short, Short, Short, Long, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 W{Short, Long, Long, 0, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 X{Long, Short, Short, Long, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 Y{Long, Short, Long, Long, 0, 0, 0, 0};
-    inline constexpr Simd::int16_8 Z{Long, Long, Short, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 A{Short, Long, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 B{Long, Short, Short, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 C{Long, Short, Long, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 D{Long, Short, Short, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 E{Short, 0, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 F{Short, Short, Long, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 G{Long, Long, Short, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 H{Short, Short, Short, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 I{Short, Short, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 J{Short, Long, Long, Long, 0, 0, 0, 0};
+    constexpr Simd::int16_8 K{Long, Short, Long, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 L{Short, Long, Short, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 M{Long, Long, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 N{Long, Short, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 O{Long, Long, Long, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 P{Short, Long, Long, Short, 0, 0, 0, 0};
+    constexpr Simd::int16_8 Q{Long, Long, Short, Long, 0, 0, 0, 0};
+    constexpr Simd::int16_8 R{Short, Long, Short, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 S{Short, Short, Short, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 T{Long, 0, 0, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 U{Short, Short, Long, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 V{Short, Short, Short, Long, 0, 0, 0, 0};
+    constexpr Simd::int16_8 W{Short, Long, Long, 0, 0, 0, 0, 0};
+    constexpr Simd::int16_8 X{Long, Short, Short, Long, 0, 0, 0, 0};
+    constexpr Simd::int16_8 Y{Long, Short, Long, Long, 0, 0, 0, 0};
+    constexpr Simd::int16_8 Z{Long, Long, Short, Short, 0, 0, 0, 0};
 
-    inline constexpr Simd::int16_8 Zero{Long, Long, Long, Long, Long, 0, 0, 0};
-    inline constexpr Simd::int16_8 One{Short, Long, Long, Long, Long, 0, 0, 0};
-    inline constexpr Simd::int16_8 Two{Short, Short, Long, Long, Long, 0, 0, 0};
-    inline constexpr Simd::int16_8 Three{Short, Short, Short, Long, Long, 0, 0, 0};
-    inline constexpr Simd::int16_8 Four{Short, Short, Short, Short, Long, 0, 0, 0};
-    inline constexpr Simd::int16_8 Five{Short, Short, Short, Short, Short, 0, 0, 0};
-    inline constexpr Simd::int16_8 Six{Long, Short, Short, Short, Short, 0, 0, 0};
-    inline constexpr Simd::int16_8 Seven{Long, Long, Short, Short, Short, 0, 0, 0};
-    inline constexpr Simd::int16_8 Eight{Long, Long, Long, Long, Short, 0, 0, 0};
-    inline constexpr Simd::int16_8 Nine{Long, Long, Long, Long, Long, 0, 0, 0};
+    constexpr Simd::int16_8 Zero{Long, Long, Long, Long, Long, 0, 0, 0};
+    constexpr Simd::int16_8 One{Short, Long, Long, Long, Long, 0, 0, 0};
+    constexpr Simd::int16_8 Two{Short, Short, Long, Long, Long, 0, 0, 0};
+    constexpr Simd::int16_8 Three{Short, Short, Short, Long, Long, 0, 0, 0};
+    constexpr Simd::int16_8 Four{Short, Short, Short, Short, Long, 0, 0, 0};
+    constexpr Simd::int16_8 Five{Short, Short, Short, Short, Short, 0, 0, 0};
+    constexpr Simd::int16_8 Six{Long, Short, Short, Short, Short, 0, 0, 0};
+    constexpr Simd::int16_8 Seven{Long, Long, Short, Short, Short, 0, 0, 0};
+    constexpr Simd::int16_8 Eight{Long, Long, Long, Long, Short, 0, 0, 0};
+    constexpr Simd::int16_8 Nine{Long, Long, Long, Long, Long, 0, 0, 0};
 
-    inline constexpr Simd::int16_8 Dot{Short, Long, Short, Long, Short, Long, 0, 0};
-    inline constexpr Simd::int16_8 Comma{Long, Long, Short, Short, Long, Long, 0, 0};
+    constexpr Simd::int16_8 Dot{Short, Long, Short, Long, Short, Long, 0, 0};
+    constexpr Simd::int16_8 Comma{Long, Long, Short, Short, Long, Long, 0, 0};
 
-    inline constexpr Simd::int16_8 OpenBracket{Long, Short, Long, Long, Short, Long, 0, 0};
-    inline constexpr Simd::int16_8 CloseBracket{Long, Short, Long, Long, Short, 0, 0, 0};
+    constexpr Simd::int16_8 OpenBracket{Long, Short, Long, Long, Short, Long, 0, 0};
+    constexpr Simd::int16_8 CloseBracket{Long, Short, Long, Long, Short, 0, 0, 0};
 
-    inline constexpr Simd::int16_8 QuestionMark{Short, Short, Long, Long, Short, Short, 0, 0};
-    inline constexpr Simd::int16_8 ExclamationMark{Long, Short, Long, Short, Long, Long, 0, 0};
+    constexpr Simd::int16_8 QuestionMark{Short, Short, Long, Long, Short, Short, 0, 0};
+    constexpr Simd::int16_8 ExclamationMark{Long, Short, Long, Short, Long, Long, 0, 0};
 }
 
 std::vector<char> DecodeMorseToPlainText(const std::string& PathToFile)
@@ -266,6 +265,7 @@ std::vector<Simd::int16_8> EncodePlainTextToMorse(const std::string& PathToFile)
     }
 
     MorseCodeVector.erase(MorseCodeVector.end());
+    MorseCodeVector.erase(MorseCodeVector.end());
 
     FStream.close();
 
@@ -307,13 +307,11 @@ void WriteToFile(const std::string& PathToOutFile, const std::vector<Simd::int16
         return;
     }
 
-    ForEachElementNotZeroInRegisters(StringToWrite, [&FStream](const int16 Character) -> void
+    ForEachValidElementInRegisters(StringToWrite, [&FStream](const int16 Character) -> void
     {
-        if(Character != MorseCodes::Unrecognized)
-        {
-            FStream << static_cast<char>(Character);
-        }
+        FStream << static_cast<char>(Character);
     });
 
     FStream.close();
 }
+
